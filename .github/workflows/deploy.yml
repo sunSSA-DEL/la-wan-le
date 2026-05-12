@@ -15,11 +15,15 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
 
-      - run: npm ci
+      - run: npm install
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
 
       - run: npx expo export --platform web
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
 
       - uses: peaceiris/actions-gh-pages@v4
         with:
