@@ -128,7 +128,8 @@ export default function ProfileScreen() {
         finalUri = await convertToBase64(finalUri);
       } catch {}
       setAvatarUrl(finalUri);
-      saveProfileIfReady(finalUri, nickName);
+      await saveUserProfile({ avatarUrl: finalUri, nickName });
+      setIsLogin(true);
     }
   };
 
@@ -136,15 +137,10 @@ export default function ProfileScreen() {
     setNickName(text);
   };
 
-  const onNicknameBlur = () => {
-    if (nickName) {
-      saveProfileIfReady(avatarUrl, nickName);
-    }
-  };
-
-  const saveProfileIfReady = async (avatar: string, name: string) => {
-    if (avatar && name) {
-      await saveUserProfile({ avatarUrl: avatar, nickName: name });
+  const onNicknameBlur = async () => {
+    const name = nickName.trim();
+    if (name) {
+      await saveUserProfile({ avatarUrl, nickName: name });
       setIsLogin(true);
     }
   };
