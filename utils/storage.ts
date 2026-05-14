@@ -7,7 +7,7 @@ export interface PoopRecord {
   endTime: number;
   duration: number;
   date: string;
-  shape: number;
+  shape: number[];
   smoothness: number;
   feeling: string[];
   note: string;
@@ -43,7 +43,17 @@ function generateId(): string {
 export async function getRecords(): Promise<PoopRecord[]> {
   try {
     const raw = await AsyncStorage.getItem(STORAGE_KEYS.RECORDS);
-    return raw ? JSON.parse(raw) : [];
+    if (!raw) return [];
+    const records: PoopRecord[] = JSON.parse(raw);
+    let migrated = false;
+    for (const r of records) {
+      if (typeof r.shape === 'number') {
+        (r as any).shape = [r.shape];
+        migrated = true;
+      }
+    }
+    if (migrated) await saveRecords(records);
+    return records;
   } catch {
     return [];
   }
@@ -221,7 +231,9 @@ export async function getStats(): Promise<Stats | null> {
 
   const shapeCount: { [key: number]: number } = {};
   records.forEach(r => {
-    shapeCount[r.shape] = (shapeCount[r.shape] || 0) + 1;
+    (r.shape || []).forEach(s => {
+      shapeCount[s] = (shapeCount[s] || 0) + 1;
+    });
   });
   let mostCommonShape = 4;
   let maxCount = 0;

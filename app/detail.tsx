@@ -29,7 +29,7 @@ export default function DetailScreen() {
   const duration = parseInt(params.duration || '0');
   const startTime = parseInt(params.startTime || '0');
 
-  const [selectedShape, setSelectedShape] = useState(0);
+  const [selectedShapes, setSelectedShapes] = useState<Record<number, boolean>>({});
   const [selectedSmoothness, setSelectedSmoothness] = useState(0);
   const [selectedFeelings, setSelectedFeelings] = useState<Record<string, boolean>>({});
   const [note, setNote] = useState('');
@@ -39,6 +39,15 @@ export default function DetailScreen() {
       Alert.alert('出错了', '请返回重新计时', [{ text: '返回', onPress: () => router.back() }]);
     }
   }, [duration]);
+
+  const toggleShape = (value: number) => {
+    setSelectedShapes(prev => {
+      const next = { ...prev };
+      if (next[value]) delete next[value];
+      else next[value] = true;
+      return next;
+    });
+  };
 
   const toggleFeeling = (tag: string) => {
     setSelectedFeelings(prev => {
@@ -50,7 +59,8 @@ export default function DetailScreen() {
   };
 
   const onSave = async () => {
-    if (!selectedShape) {
+    const shapes = Object.keys(selectedShapes).map(Number);
+    if (shapes.length === 0) {
       Alert.alert('提示', '请选择便便形状');
       return;
     }
@@ -74,7 +84,7 @@ export default function DetailScreen() {
         endTime,
         duration,
         date: recordDate,
-        shape: selectedShape,
+        shape: shapes,
         smoothness: selectedSmoothness,
         feeling: feelings,
         note: note.trim(),
@@ -109,16 +119,16 @@ export default function DetailScreen() {
 
       {/* 便便形状 */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>便便形状</Text>
+        <Text style={styles.sectionTitle}>便便形状（可多选）</Text>
         <View style={styles.shapeGrid}>
           {BRISTOL_TYPES.map(item => (
             <TouchableOpacity
               key={item.value}
               style={[
                 styles.shapeItem,
-                selectedShape === item.value && styles.shapeSelected,
+                selectedShapes[item.value] && styles.shapeSelected,
               ]}
-              onPress={() => setSelectedShape(item.value)}
+              onPress={() => toggleShape(item.value)}
               activeOpacity={0.7}
             >
               <Text style={styles.shapeEmoji}>{item.emoji}</Text>

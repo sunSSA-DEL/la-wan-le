@@ -187,7 +187,11 @@ export default function ProfileScreen() {
     }
     text += '\n--- 最近记录 ---\n';
     records.slice(-5).reverse().forEach(r => {
-      text += `${r.date} 用时${Math.round(r.duration / 60)}分钟 形状${r.shape}\n`;
+      const shapeLabels = (r.shape || []).map((s: number) => {
+        const info = BRISTOL_TYPES.find(b => b.value === s);
+        return info ? info.emoji + info.label : s;
+      }).join('、');
+      text += `${r.date} 用时${Math.round(r.duration / 60)}分钟 形状${shapeLabels}\n`;
     });
     await Clipboard.setStringAsync(text);
     Alert.alert('成功', '文本报告已复制到剪贴板');

@@ -216,7 +216,7 @@ export default function CalendarScreen() {
                   <View key={record.id} style={styles.recordItem}>
                     <View style={styles.recordTop}>
                       <Text style={styles.recordShape}>
-                        {shapeMap[record.shape]?.emoji} {shapeMap[record.shape]?.label}
+                        {(record.shape || []).map((s: number) => shapeMap[s]?.emoji + ' ' + shapeMap[s]?.label).join('、')}
                       </Text>
                       <Text style={styles.recordDuration}>{formatDuration(record.duration)}</Text>
                     </View>
