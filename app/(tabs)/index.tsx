@@ -28,7 +28,7 @@ const COLORS = {
 export default function TimerScreen() {
   const router = useRouter();
   const [timerState, setTimerState] = useState<string>(TIMER_STATE.IDLE);
-  const [displayTime, setDisplayTime] = useState('00:00:00');
+  const [displayTime, setDisplayTime] = useState('00:00');
   const [showResetDialog, setShowResetDialog] = useState(false);
   const startTimeRef = useRef(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -116,7 +116,7 @@ export default function TimerScreen() {
 
     await clearTimerState();
     setTimerState(TIMER_STATE.IDLE);
-    setDisplayTime('00:00:00');
+    setDisplayTime('00:00');
     startTimeRef.current = 0;
 
     router.push(`/detail?duration=${duration}&startTime=${startTime}`);
@@ -132,7 +132,7 @@ export default function TimerScreen() {
     await clearTimerState();
     setShowResetDialog(false);
     setTimerState(TIMER_STATE.IDLE);
-    setDisplayTime('00:00:00');
+    setDisplayTime('00:00');
     startTimeRef.current = 0;
   };
 

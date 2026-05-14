@@ -23,6 +23,7 @@ import {
   claimMedal,
   Stats,
 } from '@/utils/storage';
+import { formatDuration } from '@/utils/calendar';
 
 const COLORS = {
   bg: '#FFF8F0',
@@ -179,7 +180,7 @@ export default function ProfileScreen() {
     if (!stats) return;
     let text = '【拉完了 - 数据报告】\n\n';
     text += `总记录数：${stats.totalCount} 次\n`;
-    text += `平均时长：${Math.round(stats.avgDuration / 60)} 分钟\n`;
+    text += `平均时长：${formatDuration(stats.avgDuration)}\n`;
     text += `最常见形状：${stats.commonShapeName}\n`;
     text += `最长连续天数：${stats.streak} 天\n`;
     if (stats.topFeelings.length > 0) {
@@ -230,7 +231,7 @@ export default function ProfileScreen() {
               <Text style={styles.statLabel}>总次数</Text>
             </View>
             <View style={styles.statItem}>
-              <Text style={styles.statValue}>{stats.avgDuration}s</Text>
+              <Text style={styles.statValue}>{formatDuration(stats.avgDuration)}</Text>
               <Text style={styles.statLabel}>平均时长</Text>
             </View>
             <View style={styles.statItem}>
